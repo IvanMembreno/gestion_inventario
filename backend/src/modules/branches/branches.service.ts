@@ -30,7 +30,7 @@ export class BranchesService {
 		});
 
 		if (!branch) {
-			throw new NotFoundException(`Sucursal con id { ${id} } no encontrada`);
+			throw new NotFoundException(`Sucursal con id '${id}' no encontrada`);
 		}
 
 		return branch;
