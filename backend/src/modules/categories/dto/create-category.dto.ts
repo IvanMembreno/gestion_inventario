@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
 
-export class CreateBranchDto {
+export class CreateCategoryDto {
 	@IsString()
 	@IsNotEmpty()
 	@MinLength(2)
@@ -8,5 +8,5 @@ export class CreateBranchDto {
 
 	@IsString()
 	@IsOptional()
-	address?: string;
+	description?: string;
 }
