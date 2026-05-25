@@ -142,6 +142,9 @@ CREATE TABLE "Payment" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE INDEX "User_branchId_idx" ON "User"("branchId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
@@ -151,10 +154,31 @@ CREATE UNIQUE INDEX "Product_sku_key" ON "Product"("sku");
 CREATE UNIQUE INDEX "Product_barcode_key" ON "Product"("barcode");
 
 -- CreateIndex
+CREATE INDEX "Product_categoryId_idx" ON "Product"("categoryId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "BranchProduct_productId_branchId_key" ON "BranchProduct"("productId", "branchId");
 
 -- CreateIndex
+CREATE INDEX "InventoryMovement_productId_branchId_idx" ON "InventoryMovement"("productId", "branchId");
+
+-- CreateIndex
+CREATE INDEX "Sale_userId_branchId_idx" ON "Sale"("userId", "branchId");
+
+-- CreateIndex
+CREATE INDEX "SaleItem_productId_idx" ON "SaleItem"("productId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Invoice_saleId_key" ON "Invoice"("saleId");
+
+-- CreateIndex
+CREATE INDEX "Invoice_customerName_idx" ON "Invoice"("customerName");
+
+-- CreateIndex
+CREATE INDEX "Invoice_status_idx" ON "Invoice"("status");
+
+-- CreateIndex
+CREATE INDEX "Payment_invoiceId_idx" ON "Payment"("invoiceId");
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
