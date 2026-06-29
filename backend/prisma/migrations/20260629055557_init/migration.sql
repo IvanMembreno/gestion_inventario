@@ -93,6 +93,7 @@ CREATE TABLE "InventoryMovement" (
 CREATE TABLE "Sale" (
     "id" TEXT NOT NULL,
     "customerName" TEXT,
+    "customerPhone" TEXT,
     "total" DECIMAL(10,2) NOT NULL,
     "status" "SaleStatus" NOT NULL DEFAULT 'OPEN',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -118,6 +119,7 @@ CREATE TABLE "SaleItem" (
 CREATE TABLE "Invoice" (
     "id" TEXT NOT NULL,
     "customerName" TEXT,
+    "customerPhone" TEXT,
     "total" DECIMAL(10,2) NOT NULL,
     "status" "InvoiceStatus" NOT NULL DEFAULT 'PENDING',
     "dueDate" TIMESTAMP(3),
@@ -130,12 +132,40 @@ CREATE TABLE "Invoice" (
 -- CreateTable
 CREATE TABLE "Payment" (
     "id" TEXT NOT NULL,
+    "payerName" TEXT,
+    "notes" TEXT,
     "amount" DECIMAL(10,2) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,
     "invoiceId" TEXT NOT NULL,
 
     CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ProductAlias" (
+    "id" TEXT NOT NULL,
+    "alias" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "productId" TEXT NOT NULL,
+
+    CONSTRAINT "ProductAlias_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ShoppingList" (
+    "id" TEXT NOT NULL,
+    "itemName" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 1,
+    "price" DECIMAL(10,2),
+    "notes" TEXT,
+    "isPurchased" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "branchId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "productId" TEXT,
+
+    CONSTRAINT "ShoppingList_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -180,6 +210,15 @@ CREATE INDEX "Invoice_status_idx" ON "Invoice"("status");
 -- CreateIndex
 CREATE INDEX "Payment_invoiceId_idx" ON "Payment"("invoiceId");
 
+-- CreateIndex
+CREATE INDEX "ProductAlias_alias_idx" ON "ProductAlias"("alias");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProductAlias_alias_productId_key" ON "ProductAlias"("alias", "productId");
+
+-- CreateIndex
+CREATE INDEX "ShoppingList_branchId_isPurchased_idx" ON "ShoppingList"("branchId", "isPurchased");
+
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -221,3 +260,15 @@ ALTER TABLE "Payment" ADD CONSTRAINT "Payment_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "Payment" ADD CONSTRAINT "Payment_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "Invoice"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProductAlias" ADD CONSTRAINT "ProductAlias_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ShoppingList" ADD CONSTRAINT "ShoppingList_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ShoppingList" ADD CONSTRAINT "ShoppingList_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ShoppingList" ADD CONSTRAINT "ShoppingList_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE SET NULL ON UPDATE CASCADE;
