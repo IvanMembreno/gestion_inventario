@@ -51,6 +51,7 @@ model Branch {
     sales         Sale[]
     movements     InventoryMovement[]
     shoppingLists ShoppingList[]
+    shelves       Shelf[]
 }
 
 model User {
@@ -62,7 +63,7 @@ model User {
     isActive     Boolean  @default(true)
     createdAt    DateTime @default(now())
 
-    branch   Branch  @relation(fields: [branchId], references: [id])
+    branch   Branch @relation(fields: [branchId], references: [id])
     branchId String
 
     movements     InventoryMovement[]
@@ -110,10 +111,12 @@ model BranchProduct {
     isActive  Boolean  @default(true)
     updatedAt DateTime @updatedAt
 
-    product   Product @relation(fields: [productId], references: [id])
-    productId String
-    branch    Branch  @relation(fields: [branchId], references: [id])
-    branchId  String
+    product     Product    @relation(fields: [productId], references: [id])
+    productId   String
+    branch      Branch     @relation(fields: [branchId], references: [id])
+    branchId    String
+    shelfSlot   ShelfSlot? @relation(fields: [shelfSlotId], references: [id], onDelete: SetNull)
+    shelfSlotId String?
 
     @@unique([productId, branchId])
 }
@@ -155,10 +158,11 @@ model Sale {
 }
 
 model SaleItem {
-    id        String  @id @default(uuid())
-    quantity  Int
-    unitPrice Decimal @db.Decimal(10, 2)
-    subtotal  Decimal @db.Decimal(10, 2)
+    id          String  @id @default(uuid())
+    productName String
+    quantity    Int
+    unitPrice   Decimal @db.Decimal(10, 2)
+    subtotal    Decimal @db.Decimal(10, 2)
 
     sale      Sale    @relation(fields: [saleId], references: [id])
     saleId    String
@@ -176,6 +180,7 @@ model Invoice {
     status        InvoiceStatus @default(PENDING)
     dueDate       DateTime?
     createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @updatedAt
 
     sale   Sale   @relation(fields: [saleId], references: [id])
     saleId String @unique
@@ -221,6 +226,7 @@ model ShoppingList {
     notes       String?
     isPurchased Boolean  @default(false)
     createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 
     branch    Branch   @relation(fields: [branchId], references: [id])
     branchId  String
@@ -230,4 +236,34 @@ model ShoppingList {
     productId String?
 
     @@index([branchId, isPurchased])
+}
+
+model Shelf {
+    id          String    @id @default(uuid())
+    name        String
+    description String?
+    createdAt   DateTime  @default(now())
+
+    branch    Branch  @relation(fields: [branchId], references: [id])
+    branchId  String
+
+    slots  ShelfSlot[]
+
+    @@unique([name, branchId])
+    @@index([branchId])
+}
+
+model ShelfSlot {
+    id        String   @id @default(uuid())
+    code      String
+    notes     String?
+    updatedAt DateTime @updatedAt
+
+    shelf   Shelf  @relation(fields: [shelfId], references: [id], onDelete: Cascade)
+    shelfId String
+
+    products BranchProduct[]
+
+    @@unique([code, shelfId])
+    @@index([shelfId])
 }
