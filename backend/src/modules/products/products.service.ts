@@ -32,6 +32,7 @@ export class ProductsService {
 				data: {
 					productId: product.id,
 					branchId: dto.branchId,
+					shelfSlotId: dto.shelfSlotId,
 					price: dto.price,
 					stock: dto.stock ?? 0,
 					minStock: dto.minStock ?? 0,
@@ -97,10 +98,16 @@ export class ProductsService {
 				});
 			}
 
-			if (dto.price !== undefined || dto.stock !== undefined || dto.minStock !== undefined) {
+			if (
+				dto.shelfSlotId !== undefined ||
+				dto.price !== undefined ||
+				dto.stock !== undefined ||
+				dto.minStock !== undefined
+			) {
 				await tx.branchProduct.update({
 					where: { productId_branchId: { productId: id, branchId } },
 					data: {
+						shelfSlotId: dto.shelfSlotId,
 						price: dto.price,
 						stock: dto.stock,
 						minStock: dto.minStock,

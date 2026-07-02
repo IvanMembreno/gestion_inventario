@@ -38,6 +38,10 @@ export class CreateProductDto {
 	categoryId!: string;
 
 	@IsUUID()
+	@IsOptional()
+	shelfSlotId?: string;
+
+	@IsUUID()
 	@IsNotEmpty()
 	branchId!: string;
 

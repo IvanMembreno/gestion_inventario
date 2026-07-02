@@ -36,6 +36,10 @@ export class UpdateProductDto {
 	@IsOptional()
 	categoryId?: string;
 
+	@IsUUID()
+	@IsOptional()
+	shelfSlotId?: string;
+
 	@IsNumber({ maxDecimalPlaces: 2 })
 	@IsPositive()
 	@IsOptional()
