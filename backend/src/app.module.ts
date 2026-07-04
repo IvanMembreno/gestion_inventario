@@ -5,6 +5,7 @@ import { BranchesModule } from './modules/branches/branches.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
 import { ProductsModule } from './modules/products/products.module.js';
 import { ShelvesModule } from './modules/shelves/shelves.module.js';
+import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
 	imports: [
@@ -15,6 +16,7 @@ import { ShelvesModule } from './modules/shelves/shelves.module.js';
 		CategoriesModule,
 		ProductsModule,
 		ShelvesModule,
+		UsersModule,
 	],
 	controllers: [],
 	providers: [PrismaService],
