@@ -6,6 +6,6 @@ import { PrismaService } from '../../config/prisma.service.js';
 @Module({
 	controllers: [UsersConstroller],
 	providers: [UsersService, PrismaService],
-	exports: [PrismaService],
+	exports: [UsersService],
 })
 export class UsersModule {}
